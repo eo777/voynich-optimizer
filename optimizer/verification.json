@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "saved_records_replayed": 6,
+  "stage_metric_checks": 384,
+  "max_saved_metric_error": 1.7763568394002505e-15,
+  "max_kernel_row_error": 2.220446049250313e-16,
+  "directional_gradient_error": 8.075739197357994e-13,
+  "family_bias_gradient_error": 7.123623149967329e-13,
+  "provenance": [
+    {
+      "file": "chain_channels.json",
+      "sha256": "a4cd9d8613227efec91fe4bdbe917c6362e50b907a199211ee1cfd7a2415b41f"
+    },
+    {
+      "file": "joint_optimization_1b.json",
+      "sha256": "ee2f052f934bef7a8d2b483fb4b23277cfd655ad2e9b51d59503ae3ab560ffe3"
+    }
+  ],
+  "full_fits_run": 0,
+  "original_equivalence": {
+    "objective_error": 0.0,
+    "gradient_max_error": 0.0,
+    "guided_template_max_error": 0.0,
+    "bias_objective_error": 0.0,
+    "bias_gradient_max_error": 0.0
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "echo7.optimizer_extraction.v1",
+  "source_study": "solve/botanical_enrichment/echo7/information_retention_20261014",
+  "source_files": [
+    {
+      "file": "joint_optimization.py",
+      "sha256": "f070fcdbfda7ec50abc75f15b7a58e8133b7ef88eb1deb2849d83042e7b7483b"
+    },
+    {
+      "file": "joint_generic_optimization.py",
+      "sha256": "34ea393f6875aad48f8366daf17ff91e182c659f4af6a1a26f31129ab086bee5"
+    },
+    {
+      "file": "rule_guided_optimization.py",
+      "sha256": "64acdc57f0d4b091cacc5e19a1cc15e7f93211399289a35793dd9f2e526c0b90"
+    },
+    {
+      "file": "rule_guided_bias.py",
+      "sha256": "c47884b16c8a33f64b8f1147a55bb74c065e387cd845d0ac86b8dd85cb51fa1e"
+    },
+    {
+      "file": "finalize_joint_candidates.py",
+      "sha256": "fdf75d94a895bb707c6d5ada54ca93156f2f29754d95c424b34f28e5030ad613"
+    }
+  ],
+  "adaptations": [
+    "Dataset and vocabulary are instance fields instead of mutable globals.",
+    "Paths point to exported data/, research/ and runs/; no workspace imports.",
+    "The original generic chunked gradient is also used for named supports.",
+    "One portable CLI exposes the existing modes; guided modes retain the original 1b-only schedule.",
+    "Exact seeds and identity/frequency controls remain candidates under the unsmoothed objective.",
+    "Verification performs saved-kernel replay and directional derivative checks, not a fresh fit."
+  ]
+}

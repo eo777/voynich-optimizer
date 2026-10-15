@@ -1,0 +1,286 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Echo7: rule-guided paths and historical information reference · Voynich optimizer</title><style>body{margin:0;background:#fcfdfd;color:#19364a;font:16px/1.65 system-ui,sans-serif}main{max-width:1100px;margin:auto;padding:32px 24px 70px}a{color:#24638b}h1,h2,h3{line-height:1.25;margin-top:1.4em}nav{display:flex;gap:20px;flex-wrap:wrap}table{border-collapse:collapse;display:block;overflow:auto;font-size:14px;margin:24px 0}th,td{border-bottom:1px solid #dce5e9;padding:9px 12px;text-align:left}pre{overflow:auto;background:#f0f4f6;padding:18px;border-radius:6px}code{font-size:.9em}img{max-width:100%;height:auto}p,li{overflow-wrap:anywhere}blockquote{margin-left:0;padding-left:20px;border-left:4px solid #a9bdc8}</style><main><nav><a href="index.html">← Voynich optimizer</a><a href="RULE_GUIDED_RESULTS.md">Download Markdown</a><a href="https://github.com/eo777/voynich-optimizer">Source repository</a></nav><h1>Echo7: rule-guided paths and historical information reference</h1>
+<p>15 October 2026. Completed sensitivity study; prior models remain available.</p>
+<p>The desired chol → cheol → chedy route was already present in the scheduled graph. Initialization alone did not beat the previous achieved objective. Preserving initial ch/sh classes and adding a continuing family preference produces a much more coherent version of that route while retaining slightly more word-ID information. Its frequency mismatch is larger. These findings depend on explicit assumptions; they do not identify historical meanings or ancestry.</p>
+<h2>What was changed</h2>
+<p>The original optimizer uses the scheduled catalogue as allowed edges. It does not weight those edges by confidence or degree, and it fits a separate routing vector for each spelling at each transition. The graph permits chol → ol and later ol → shol. BENCH_DROP_l is a Theory, but the overlapping L_NOM_L is catalogued as a Rule: simply removing tentative operators would not remove this alternative.</p>
+<p>The established preferred route uses S1/C1.1 at 1b → 1.5a (chol → cheol), retention into 2a, and B1/C1.2 at 2a → 3a (cheol → chedy), with later retention possible. The parallel sh path preserves sh throughout. Composed C1 routes also exist. No edge was added.</p>
+<ol>
+<li>
+<p><strong>Initialization only:</strong> start from the previous fitted channel, replacing plain ch/sh terminal-liquid family rows, with any retained prefix, by guesses favoring existing forward S1 early and B1/C1 later. Two guesses assign 50% or 95% to the preferred change and retain the rest; rows without such a permitted target favor identity. The e+dy results favor retention. Other rows are unchanged. These percentages are initial guesses, not measured conversion rates. The original objective remains mean section total variation + lambda × final fractional word-ID information loss. Both lambda=0.2 and 0.75 were tested. The previous feasible model remains eligible and wins both comparisons.</p>
+</li>
+<li>
+<p><strong>Preserve initial classes:</strong> every current spelling belongs to initial ch, initial sh, or other. Edges between these three classes are prohibited, closing neutral-spelling bypasses. This also prohibits initial bench deletion/attachment; it is stronger than banning direct ch/sh substitution. Internal benches in words with other initials are not separately locked. The same two guided starts, a refined projection of the earlier fit, and a frequency-optimal start are evaluated under the unchanged objective.</p>
+</li>
+<li>
+<p><strong>Continuing family preference:</strong> retain that partition and lambda=0.75, then add a routing KL penalty toward a template with 50% early S1 conversion and 95% later B1/C1 conversion; otherwise retain the family spelling. Each supported edge has 1e-6 dust before normalization. Only the selected current-word family rows incur the penalty. The expected KL in nats is averaged over transitions and divided by the fixed starting family mass. Strengths 0.03 and 0.1 are tested. This changes the objective; it cannot be called an optimization improvement under the old objective. Final refined locked candidates and the exact template remain eligible.</p>
+</li>
+</ol>
+<p>Every kernel is source-blind: all original values at the same current spelling follow the same probabilities. Initial token priors remain fixed. Every starting spelling, including a hapax, retains a separate ID. Searches use at most 220 L-BFGS-B iterations per start. Exact unsmoothed scores select candidates, and iteration-limit statuses are reported. No global information optimum is claimed.</p>
+<h2>Results</h2>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th style="text-align:right">lambda</th>
+<th style="text-align:right">Mean usage TV</th>
+<th style="text-align:right">Final usage TV</th>
+<th style="text-align:right">All-word information</th>
+<th style="text-align:right">Common-word information</th>
+<th style="text-align:right">chol → chedy</th>
+<th style="text-align:right">shol → shedy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rule-guided initialization (lambda=0.75)</td>
+<td style="text-align:right">0.75</td>
+<td style="text-align:right">53.02%</td>
+<td style="text-align:right">53.36%</td>
+<td style="text-align:right">94.00%</td>
+<td style="text-align:right">91.99%</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">70.67%</td>
+</tr>
+<tr>
+<td>Rule-guided initialization (lambda=0.2)</td>
+<td style="text-align:right">0.2</td>
+<td style="text-align:right">50.76%</td>
+<td style="text-align:right">51.43%</td>
+<td style="text-align:right">87.47%</td>
+<td style="text-align:right">78.19%</td>
+<td style="text-align:right">27.41%</td>
+<td style="text-align:right">58.49%</td>
+</tr>
+<tr>
+<td>Initial ch/sh preserved (lambda=0.75)</td>
+<td style="text-align:right">0.75</td>
+<td style="text-align:right">54.62%</td>
+<td style="text-align:right">56.40%</td>
+<td style="text-align:right">94.97%</td>
+<td style="text-align:right">92.82%</td>
+<td style="text-align:right">73.85%</td>
+<td style="text-align:right">79.41%</td>
+</tr>
+<tr>
+<td>Initial ch/sh preserved (lambda=0.2)</td>
+<td style="text-align:right">0.2</td>
+<td style="text-align:right">52.65%</td>
+<td style="text-align:right">54.64%</td>
+<td style="text-align:right">89.53%</td>
+<td style="text-align:right">83.20%</td>
+<td style="text-align:right">64.08%</td>
+<td style="text-align:right">76.34%</td>
+</tr>
+<tr>
+<td>Initial ch/sh preserved + family preference (0.03)</td>
+<td style="text-align:right">0.75</td>
+<td style="text-align:right">58.00%</td>
+<td style="text-align:right">60.69%</td>
+<td style="text-align:right">94.98%</td>
+<td style="text-align:right">94.02%</td>
+<td style="text-align:right">80.06%</td>
+<td style="text-align:right">99.75%</td>
+</tr>
+<tr>
+<td>Initial ch/sh preserved + family preference (0.1)</td>
+<td style="text-align:right">0.75</td>
+<td style="text-align:right">58.60%</td>
+<td style="text-align:right">61.44%</td>
+<td style="text-align:right">95.05%</td>
+<td style="text-align:right">94.49%</td>
+<td style="text-align:right">99.58%</td>
+<td style="text-align:right">99.90%</td>
+</tr>
+</tbody>
+</table>
+<p>The initialization-only rows retain the previous fits, so their scores are also the baseline. At lambda=0.75 the starting fit retains 94.00% all-word and 91.99% common-word information. The strongest continuing preference retains 95.05% and 94.49%, respectively; mean TV rises from 53.02% to 58.60%. Every locked model has exactly zero opposite-initial value mass.</p>
+<p>The original named support has a certified minimum mean TV of 50.71%; preserving the three initial classes raises this to 52.64%. These are support-specific fixed-prior frequency bounds, not thresholds for language plausibility.</p>
+<p>Common means at least ten occurrences in 1b. Its retained-information percentage conditions on membership in that cohort; the complete files separately give uncertainty against all competing values. Strongest-prior common uncertainty against all values is 0.401618 bits, versus common initial entropy 5.056744 bits. Unattested identity persistence remains permitted: the strongest-prior final mass on observed spellings is 66.57%. That simulated persistence does not establish observed historical survival.</p>
+<h2>Inspect the proposed path and its usage</h2>
+<p><a href="index.html?word=chol&amp;condition=guided-1b-family_bias_0.1#word-explorer">Open chol under the stronger continuing family preference</a>. All six new systems are also in the word selector.</p>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th style="text-align:right">Original chol value at chol</th>
+<th style="text-align:right">At cheol</th>
+<th style="text-align:right">At chedy</th>
+<th style="text-align:right">Whole-model chedy rate / 10,000</th>
+<th style="text-align:right">Observed chedy rate / 10,000</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1b</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">0.00</td>
+<td style="text-align:right">0.00</td>
+</tr>
+<tr>
+<td>1.5a</td>
+<td style="text-align:right">78.05%</td>
+<td style="text-align:right">21.95%</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">0.00</td>
+<td style="text-align:right">0.00</td>
+</tr>
+<tr>
+<td>2a</td>
+<td style="text-align:right">41.69%</td>
+<td style="text-align:right">58.31%</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">0.00</td>
+<td style="text-align:right">3.22</td>
+</tr>
+<tr>
+<td>3a</td>
+<td style="text-align:right">9.16%</td>
+<td style="text-align:right">13.65%</td>
+<td style="text-align:right">77.19%</td>
+<td style="text-align:right">317.86</td>
+<td style="text-align:right">158.23</td>
+</tr>
+<tr>
+<td>3b</td>
+<td style="text-align:right">2.97%</td>
+<td style="text-align:right">13.65%</td>
+<td style="text-align:right">83.38%</td>
+<td style="text-align:right">346.02</td>
+<td style="text-align:right">212.38</td>
+</tr>
+<tr>
+<td>3c</td>
+<td style="text-align:right">2.97%</td>
+<td style="text-align:right">13.65%</td>
+<td style="text-align:right">83.38%</td>
+<td style="text-align:right">346.01</td>
+<td style="text-align:right">137.61</td>
+</tr>
+<tr>
+<td>4c</td>
+<td style="text-align:right">0.25%</td>
+<td style="text-align:right">2.17%</td>
+<td style="text-align:right">97.58%</td>
+<td style="text-align:right">398.44</td>
+<td style="text-align:right">234.88</td>
+</tr>
+<tr>
+<td>4a</td>
+<td style="text-align:right">0.01%</td>
+<td style="text-align:right">0.40%</td>
+<td style="text-align:right">99.58%</td>
+<td style="text-align:right">405.32</td>
+<td style="text-align:right">302.41</td>
+</tr>
+</tbody>
+</table>
+<p>At 4a the stronger family preference projects chedy at 405.32/10,000 against 302.41 observed (206 tokens), and shedy at 190.66 against 361.13 observed (246 tokens). The intuitive route therefore does not exactly reproduce these endpoint frequencies. A change of usage, other donors, different conversion shares, or a different mapping would be needed; the fit alone does not decide which.</p>
+<p>As an independent arithmetic check, merge only the bare ch liquid spellings into chedy and the bare sh liquid spellings into shedy, leaving every other initial ID distinct. That alone retains 99.1198% of all-word ID information and 97.2939% of common-only information. This is not a fitted whole-chain model. It shows that a few coherent family merges do not mathematically require the much larger losses seen under unconstrained generic mixing.</p>
+<h2>Historical reference</h2>
+<p>The following are new measurements from existing editor-aligned manuscript forms and expansions, preserving abbreviation signs. They use the same information formula, 1 − H(full-word spelling | written form) / H(full-word spelling), without sentence context. They are measured isolated-form spelling-ID references, not published universal loss rates or decoded semantics.</p>
+<table>
+<thead>
+<tr>
+<th>Reference</th>
+<th style="text-align:right">Paired tokens</th>
+<th style="text-align:right">Common-word information retained</th>
+<th style="text-align:right">Common-word information lost</th>
+<th style="text-align:right">Best isolated-form error</th>
+<th style="text-align:right">Expanded-frequency TV after majority decoding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vulgate Psalm 101: 48 manuscript witnesses</td>
+<td style="text-align:right">15,476</td>
+<td style="text-align:right">99.96%</td>
+<td style="text-align:right">0.04%</td>
+<td style="text-align:right">0.14%</td>
+<td style="text-align:right">0.14%</td>
+</tr>
+<tr>
+<td>Dated Latin manuscripts: 101 samples</td>
+<td style="text-align:right">14,268</td>
+<td style="text-align:right">99.93%</td>
+<td style="text-align:right">0.07%</td>
+<td style="text-align:right">0.38%</td>
+<td style="text-align:right">0.36%</td>
+</tr>
+<tr>
+<td>Fontenay: 104 charters</td>
+<td style="text-align:right">19,551</td>
+<td style="text-align:right">99.88%</td>
+<td style="text-align:right">0.12%</td>
+<td style="text-align:right">0.32%</td>
+<td style="text-align:right">0.28%</td>
+</tr>
+<tr>
+<td>Saint-Victor Latin 14525: one hand</td>
+<td style="text-align:right">10,621</td>
+<td style="text-align:right">99.73%</td>
+<td style="text-align:right">0.27%</td>
+<td style="text-align:right">0.89%</td>
+<td style="text-align:right">0.83%</td>
+</tr>
+</tbody>
+</table>
+<p>A real example: Fontenay mͦ has editor expansions modo (9), monachus (5), monacho (1), monachi (1). Those 16 occurrences are ambiguous, but they are only 16 of 19,551 tokens. Multiple surface forms for one expanded word need not lose word identity; several expanded words sharing a surface can. Some collisions distinguish spelling variants rather than meanings.</p>
+<p>The known channel for the same aligned tokens has essentially zero forward frequency mismatch by construction, even when collisions exist. The last table column is a different quantity: frequency distortion after always choosing one majority expansion for each surface. Finite samples can miss alternative expansions; witness pooling, normalization, partial expansion and transcription conventions matter. Witness-specific and period results, a target-quality sensitivity, all provenance and worked examples are in the <a href="historical_reference.html">historical reference</a>.</p>
+<p>For a published contextual expansion result, <a href="https://arxiv.org/pdf/2107.03450">Camps, Vidal-Gorène and Vernet (2021), Table 4</a> report 97.02% overall expansion accuracy and 97.92% on ambiguous inputs. These are prediction accuracies, not information-retention percentages. The paired data come from <a href="https://github.com/oriflamms/PsautierIMS">ORIFLAMMS Psalm witnesses</a>, <a href="https://github.com/oriflamms/Dated-and-Datable-Manuscripts_LIRIS">dated manuscripts</a>, <a href="https://github.com/oriflamms/Fontenay-oriflamms">Fontenay</a>, and <a href="https://doi.org/10.5281/zenodo.5071964">Saint-Victor</a>.</p>
+<h2>What frequency mismatch can and cannot establish</h2>
+<p>A separate unchanged-language control divides 612,195 letter-word tokens from the Clementine Vulgate into 20 disjoint eight-passage chains with the exact Echo section lengths. An identity mapping preserves 100% of initial word identity, while fixed initial frequencies give 58.81% average TV and 59.03% final TV. Three shuffled full-corpus controls give 51.43% average TV. The large inflected vocabulary and finite sampling account for much of this mismatch. With individual common words plus one all-other bucket, average TV is 11.60% naturally and 3.14% shuffled; within-common renormalization instead gives 24.50% and 8.83%. Those denominators differ.</p>
+<p>This is not a 59% acceptable threshold for Voynich: vocabulary, morphology, genre and repetition are not matched, and the 1598 Clementine recension is not a fifteenth-century scribal witness. It demonstrates that low frequency mismatch and high identity preservation are separate aims. Minimizing TV too strongly can reward implausible reassignment simply to explain normal usage variation. Historical abbreviation loss is low in these samples, whereas the fitted Voynich loss is conditional on unknown routes and fixed-usage assumptions. The earlier low scores do not establish unavoidable semantic loss.</p>
+<h2>Verification and reproduction</h2>
+<p>Independent full-vocabulary replay verifies all six retained channels, every stage's frequency and entropy metrics, focal routes, eight reconstructed guided seeds, support and initial partitions. Maximum discrepancy 5.33e-15. The continuing-prior analytic gradient passes finite differences within 8.11e-12. Selection accounting for unselected refinement candidates is retained, but their intermediate kernels are not stored. Browser export independently checks 56 transition replays within 6.66e-16.</p>
+<p>Run rule_guided_optimization.py, refine_rule_guided.py, rule_guided_bias.py, finalize_rule_guided_bias.py, rule_guided_verification.py, export_rule_guided_view.py, then rule_guided_report.py. The bias run may execute concurrently with refinement, but the finalizer must follow both. The historical reference has its own three reproducible scripts. Prior study kernels are unchanged. Only compact kernels, metrics, source and reports are retained; no dense training arrays are written.</p>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th>Selected start</th>
+<th>Termination</th>
+<th style="text-align:right">Iterations</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rule-guided initialization (lambda=0.75)</td>
+<td>previous_fitted</td>
+<td>Previous feasible fit retained</td>
+<td style="text-align:right">—</td>
+</tr>
+<tr>
+<td>Rule-guided initialization (lambda=0.2)</td>
+<td>previous_fitted</td>
+<td>Previous feasible fit retained</td>
+<td style="text-align:right">—</td>
+</tr>
+<tr>
+<td>Initial ch/sh preserved (lambda=0.75)</td>
+<td>locked_frequency_start</td>
+<td>STOP: TOTAL NO. of ITERATIONS REACHED LIMIT</td>
+<td style="text-align:right">220</td>
+</tr>
+<tr>
+<td>Initial ch/sh preserved (lambda=0.2)</td>
+<td>locked_frequency_start</td>
+<td>STOP: TOTAL NO. of ITERATIONS REACHED LIMIT</td>
+<td style="text-align:right">220</td>
+</tr>
+<tr>
+<td>Initial ch/sh preserved + family preference (0.03)</td>
+<td>family_template</td>
+<td>STOP: TOTAL NO. of ITERATIONS REACHED LIMIT</td>
+<td style="text-align:right">220</td>
+</tr>
+<tr>
+<td>Initial ch/sh preserved + family preference (0.1)</td>
+<td>family_template</td>
+<td>STOP: TOTAL NO. of ITERATIONS REACHED LIMIT</td>
+<td style="text-align:right">220</td>
+</tr>
+</tbody>
+</table>
+</main></html>

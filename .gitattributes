@@ -1,0 +1,2 @@
+# Preserve the exact published bytes used by site-manifest.json.
+* -text

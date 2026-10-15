@@ -1,0 +1,579 @@
+{
+  "generator": "echo.simple_optimizer.standalone.v1",
+  "built_at": "2026-10-15T23:10:15.798882+00:00",
+  "study": "Echo simple joint frequency/information optimizer; 14–15 October 2026",
+  "repository": "https://github.com/eo777/voynich-optimizer",
+  "models": 24,
+  "words": 6903,
+  "files": {
+    ".gitattributes": {
+      "bytes": 73,
+      "sha256": "c1a455097b600d6ea8ea378a1d1a75e86c5582d75083c8b1ef0d2326f3e805af"
+    },
+    ".gitignore": {
+      "bytes": 68,
+      "sha256": "e36d359ee70eada87e6615e0d3c9bdf76cdd40781073c30df8da2e7d0e64baaf"
+    },
+    ".nojekyll": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "JOINT_OPTIMIZATION_RESULTS.md": {
+      "bytes": 24302,
+      "sha256": "3b164bbdba1bae5043ed7d2f7230405366d8ea8048dcc9ad89da693b9e8a1849"
+    },
+    "README.md": {
+      "bytes": 6154,
+      "sha256": "34f264ee7481156c8bd070f44dbc3bedf77dce0b10916fa09d8f88a9083c7728"
+    },
+    "RULE_GUIDED_RESULTS.md": {
+      "bytes": 12758,
+      "sha256": "ab2e03343cc5d7d78873017ef96e9ebc585b8ec4bb6cf38dc0ccb033697c58e1"
+    },
+    "about.html": {
+      "bytes": 7877,
+      "sha256": "c6604d19ff4aef6e0d941defb23650e87cb685dec8acfcc89cf3ce4f86df777e"
+    },
+    "check.py": {
+      "bytes": 2947,
+      "sha256": "aade072148b78fa0d372edf1aebfc6753a60619420c103785a4fd965cefc8371"
+    },
+    "data/chain_channels.json": {
+      "bytes": 1196987,
+      "sha256": "a4cd9d8613227efec91fe4bdbe917c6362e50b907a199211ee1cfd7a2415b41f"
+    },
+    "data/joint_generic_candidates.json": {
+      "bytes": 11630489,
+      "sha256": "ad4d032caa6fe0cae5d69ccbe572feb83ccae6bf503b49460c0e8b185ccb317f"
+    },
+    "data/reference_1a.json": {
+      "bytes": 25944,
+      "sha256": "17b25be9369827bae99268e1cf2d7777da3a0ce3690967a7f62a85685e2b0fc3"
+    },
+    "data/reference_1b.json": {
+      "bytes": 23342,
+      "sha256": "0a34b4c832ddc89c5d8d43099a9902ec3e38763cd31570aac032de1ac822d97f"
+    },
+    "historical_reference.html": {
+      "bytes": 13829,
+      "sha256": "3ff3eb3f44ed5f46011ae9d4582a65f8e26363ad4e6a235fafab1f7f049fb73f"
+    },
+    "historical_reference_metrics.json": {
+      "bytes": 626729,
+      "sha256": "aa71d3ccb0cb1eaf9636a3fe6b12d94f0580ebee376c4c0dff8ca31d387f0b38"
+    },
+    "historical_reference_vulgate_usage.json": {
+      "bytes": 278143,
+      "sha256": "63c605693fe8aed8b505ae6bc66d980f44335c7d1a093430c7895f505ece74de"
+    },
+    "index.html": {
+      "bytes": 6483,
+      "sha256": "4dbba94a61fbffefefdfc4e87dec967572afdbb2b5e35d7712ff35b857aa9d75"
+    },
+    "joint_loss_trace.json": {
+      "bytes": 449988,
+      "sha256": "885d7cd898e2c1814dfbe5c40563a42d8e501a8a968da266efdbbada86b6c296"
+    },
+    "joint_optimization_tradeoff.pdf": {
+      "bytes": 20652,
+      "sha256": "0e35eaa12a852f09fc5bdb056727f8564144a68ff6929eaaaae73fcbd902bf59"
+    },
+    "joint_optimization_tradeoff.png": {
+      "bytes": 102134,
+      "sha256": "32bd435d02bb6145f42aa3b8619253624acf62de133315181c30d27050eb86d1"
+    },
+    "joint_optimization_tradeoff.svg": {
+      "bytes": 62987,
+      "sha256": "3ac692e5da9b28f9b3c27684762aed885837039858edf91a7eb60f30eddfe456"
+    },
+    "joint_optimization_view.js": {
+      "bytes": 10672,
+      "sha256": "6407c92f8d674330b2e1d134b8e67fba05c3005e0a6cf24d0b218355d06a7175"
+    },
+    "joint_optimization_view.json": {
+      "bytes": 143987,
+      "sha256": "7a43a8e387012be61a454bf63813b5da451f8ac197409851ca89a511fbe0469f"
+    },
+    "joint_word_explorer.mjs": {
+      "bytes": 7963,
+      "sha256": "206c48b360cd364ba81ec58ea3541e590ea354ed76032f44afbed03d81549aee"
+    },
+    "joint_word_explorer/ed1-1b-frequency_only.json": {
+      "bytes": 1204428,
+      "sha256": "9531330db2ffa402b9e354fe8505d9cb28190b8743db665de845420014966553"
+    },
+    "joint_word_explorer/ed1-1b-joint.json": {
+      "bytes": 2105583,
+      "sha256": "aaaa7197a5ae99c5be602c9faf463f54eabe18376ad36d60d82a7b8d2408ae49"
+    },
+    "joint_word_explorer/ed2-1b-frequency_only.json": {
+      "bytes": 1477326,
+      "sha256": "1dd11e33373f736806ee9044cc0195a63cc127d181e49a02cbde89343eefc9ca"
+    },
+    "joint_word_explorer/ed2-1b-joint.json": {
+      "bytes": 7180561,
+      "sha256": "ca5a068a5dc8ab359425dfaa05276b79f5f1e487487ce8802ffb5e5e93a024be"
+    },
+    "joint_word_explorer/ed3-1b-frequency_only.json": {
+      "bytes": 1536213,
+      "sha256": "f1a5277f2969390db8f7f75702a256be6828be2c5910ba3f3567703e1ec58d4e"
+    },
+    "joint_word_explorer/ed3-1b-joint.json": {
+      "bytes": 1536228,
+      "sha256": "fac1eebe9c09cb773eeb1e9afe726ccf73105e79dfa6ab759a4e3c27e61845cc"
+    },
+    "joint_word_explorer/guided-1b-bench_locked_0.2.json": {
+      "bytes": 1037965,
+      "sha256": "c5058f8c279e4384b505174d1ff70c3a6fbf4a153bb0c8d39210430af6509419"
+    },
+    "joint_word_explorer/guided-1b-bench_locked_0.75.json": {
+      "bytes": 1039236,
+      "sha256": "3ead7bb23abd69aa6355c0a3744db7c9c483350db79d5b09a8d76fdbace2a288"
+    },
+    "joint_word_explorer/guided-1b-family_bias_0.03.json": {
+      "bytes": 1021884,
+      "sha256": "0daaa951e5d9dcf213d7d3d6a67d48e993e9081c1462c5012adb11f1150a4efa"
+    },
+    "joint_word_explorer/guided-1b-family_bias_0.1.json": {
+      "bytes": 1021941,
+      "sha256": "1f38785e70ecad15ca3f58e80f4be3b88982d0bd1cec43972f69d39ea41c0077"
+    },
+    "joint_word_explorer/guided-1b-rule_initialized_0.2.json": {
+      "bytes": 1092168,
+      "sha256": "5a256f4a4b07f9b27f2a9f25a3d6d308ff82a37385df173e8c7561530de277c0"
+    },
+    "joint_word_explorer/guided-1b-rule_initialized_0.75.json": {
+      "bytes": 1093395,
+      "sha256": "83d94ee1f64e3c791119820c5eadc70e73f9683b5a6f73283a7b506abd032bbd"
+    },
+    "joint_word_explorer/named-1a-frequency_only.json": {
+      "bytes": 973418,
+      "sha256": "3410562829029ca5fecdd5effe8ec881bb74a111e431c55e7f86e75ca9d3a5e6"
+    },
+    "joint_word_explorer/named-1a-identity_control.json": {
+      "bytes": 927002,
+      "sha256": "bb2cb87d6b4378e112317ab6c02c9c8a083abdac6432746f2f66845318b55669"
+    },
+    "joint_word_explorer/named-1a-joint_0.05.json": {
+      "bytes": 1278396,
+      "sha256": "9ab44d057c6340a2cf59eacf9d3c9c83f58477d9552e3b3544bd20d35834ebbf"
+    },
+    "joint_word_explorer/named-1a-joint_0.2.json": {
+      "bytes": 1278863,
+      "sha256": "46c9e821f34e62cddad8a2e64dc4102eaf8084d1f94a0e6095b09d873cb4838c"
+    },
+    "joint_word_explorer/named-1a-joint_0.75.json": {
+      "bytes": 1280071,
+      "sha256": "92fd48b3b40c0641a61bb4e669461475f3441117ade225ab3ba23dd9c30898d4"
+    },
+    "joint_word_explorer/named-1a-joint_3.json": {
+      "bytes": 1282723,
+      "sha256": "0e341a7c41d9d50fa27e7068ad87786d570d56bd3336603010c9ed74b0e70631"
+    },
+    "joint_word_explorer/named-1b-frequency_only.json": {
+      "bytes": 821922,
+      "sha256": "6e2b734e08e2b2926f50ccf17397ed58878ed0daf1373154efb1624f96f9fb2f"
+    },
+    "joint_word_explorer/named-1b-identity_control.json": {
+      "bytes": 765828,
+      "sha256": "1dd1e49b1f9399d7695742105253b70856361aa02d34f15ae37c0b3089c747b2"
+    },
+    "joint_word_explorer/named-1b-joint_0.05.json": {
+      "bytes": 1091993,
+      "sha256": "5cde3879a3dadf30c7bc17f2816701623ce9becbc79bfb8fc740a0c1a8bf919f"
+    },
+    "joint_word_explorer/named-1b-joint_0.2.json": {
+      "bytes": 1092118,
+      "sha256": "c7f06bebafba34e2edce701d5e2d9d7e70cdfee7c445530fc5e5e1e993753efd"
+    },
+    "joint_word_explorer/named-1b-joint_0.75.json": {
+      "bytes": 1093252,
+      "sha256": "87297fc020cbf1afc4db3b3c41b0aa9187644a00e1839a5f62bc5239a350f4a2"
+    },
+    "joint_word_explorer/named-1b-joint_3.json": {
+      "bytes": 1093818,
+      "sha256": "0f3e31cee1e2290598c5dc066fd32cc55d855993225cd6caab3d663eb2b72724"
+    },
+    "joint_word_explorer_manifest.json": {
+      "bytes": 69875,
+      "sha256": "74c2bf83151ac4141bf8fbe0da21cb393ff815a8480fcbcf7dbc89d0d324718c"
+    },
+    "joint_word_math.mjs": {
+      "bytes": 1565,
+      "sha256": "16db605d7284e37184d921393fcebfd30e1a007956e3a57a9d389ecde5032350"
+    },
+    "methods.html": {
+      "bytes": 49739,
+      "sha256": "5db4385faeef0b3aecd0f9dad554ef744c93187b2ae4f1c8437b6f570d792faa"
+    },
+    "optimizer/README.html": {
+      "bytes": 7890,
+      "sha256": "53bf2bac05f164f8dfdc50ce53aeb15000a8375197415f1daecbbd33f3ea302c"
+    },
+    "optimizer/README.md": {
+      "bytes": 6460,
+      "sha256": "e980bf53dd071a67e023a083e112eb502e9c97223783ed1a8b43378fd1c65c04"
+    },
+    "optimizer/__init__.py": {
+      "bytes": 80,
+      "sha256": "4f13239555cf98cc8c2af773254b6cb92933c11a7f6c50a98a78ffdb55682ce7"
+    },
+    "optimizer/core.py": {
+      "bytes": 11594,
+      "sha256": "fe9487c7147059b4497a7c384f85fb7dace19c963fc2f8e879cde541528d7eba"
+    },
+    "optimizer/guidance.py": {
+      "bytes": 6253,
+      "sha256": "4f802ed4cbe3ebda177d087751aa5e3ae53972d9d7c375bbc6f2bda8a93f7723"
+    },
+    "optimizer/provenance.json": {
+      "bytes": 1416,
+      "sha256": "0bae90bc6b22221788bd632027dc2feb77b0c3c0a37ede6d77e9d4d9f0520e15"
+    },
+    "optimizer/requirements.txt": {
+      "bytes": 30,
+      "sha256": "2872240ad39db3fa61ea202cac35a5579c482437efa38edec506dbdc0f870942"
+    },
+    "optimizer/run.py": {
+      "bytes": 18567,
+      "sha256": "fc69da582f4ad98c7d2cd549835bdad1fef8c7fc3f7698231588a828a6e6a97d"
+    },
+    "optimizer/verification.json": {
+      "bytes": 835,
+      "sha256": "8052ff427a8f90bd56aa265d00ca31aa7efc119f19d19b2587fb6438f3e197a2"
+    },
+    "optimizer/verify.py": {
+      "bytes": 5650,
+      "sha256": "4cfe31e19c918d6a3b4944ef3e3871f1cf19f0e13b9c5aab1fbccb98bb976b59"
+    },
+    "rule-guided.html": {
+      "bytes": 18702,
+      "sha256": "cfc03f8cb417e846ff570d40f7393b456ee370fe2e34ba1f643954d56448feba"
+    },
+    "rule_guided_view.js": {
+      "bytes": 9328,
+      "sha256": "0c3be87042ab875a22301139659eeeb4292f97f69386ebdff23bc650dddc7762"
+    },
+    "rule_guided_view.json": {
+      "bytes": 146497,
+      "sha256": "a67287073994affba7f10e8d17b5f793772dc6c45d9c9f693a36bb2971f3e818"
+    }
+  },
+  "source_snapshots": {
+    "historical_reference.html": {
+      "path": "apps/echo_optimizer/site/historical_reference.html",
+      "sha256": "7080c4f7a9657988a6f145344fb1a4aa9846ba4bb46b721ffa2eb0fa5e1a29fb",
+      "adapted": true
+    },
+    "index.html": {
+      "path": "apps/echo_optimizer/site/index.html",
+      "sha256": "62de2c5702c94ecfddd50245610847cf073e43ce555bf107b1ca4103028556ff",
+      "adapted": true
+    },
+    "joint_optimization_view.js": {
+      "path": "apps/echo_optimizer/site/joint_optimization_view.js",
+      "sha256": "77983993754882ca3401c1d804aef4a069c438d0becc225976a56b6b6c536c74",
+      "adapted": true
+    },
+    "joint_word_explorer.mjs": {
+      "path": "apps/echo_optimizer/site/joint_word_explorer.mjs",
+      "sha256": "206c48b360cd364ba81ec58ea3541e590ea354ed76032f44afbed03d81549aee",
+      "adapted": false
+    },
+    "joint_word_math.mjs": {
+      "path": "apps/echo_optimizer/site/joint_word_math.mjs",
+      "sha256": "16db605d7284e37184d921393fcebfd30e1a007956e3a57a9d389ecde5032350",
+      "adapted": false
+    },
+    "rule_guided_view.js": {
+      "path": "apps/echo_optimizer/site/rule_guided_view.js",
+      "sha256": "c9c14195025783efd43e0501667a4c5b5ce4af51599d0821859b4ad93194d53c",
+      "adapted": true
+    },
+    "optimizer/__init__.py": {
+      "path": "apps/echo_optimizer/engine/__init__.py",
+      "sha256": "4f13239555cf98cc8c2af773254b6cb92933c11a7f6c50a98a78ffdb55682ce7",
+      "adapted": false
+    },
+    "optimizer/core.py": {
+      "path": "apps/echo_optimizer/engine/core.py",
+      "sha256": "fe9487c7147059b4497a7c384f85fb7dace19c963fc2f8e879cde541528d7eba",
+      "adapted": false
+    },
+    "optimizer/guidance.py": {
+      "path": "apps/echo_optimizer/engine/guidance.py",
+      "sha256": "4f802ed4cbe3ebda177d087751aa5e3ae53972d9d7c375bbc6f2bda8a93f7723",
+      "adapted": false
+    },
+    "optimizer/provenance.json": {
+      "path": "apps/echo_optimizer/engine/provenance.json",
+      "sha256": "0bae90bc6b22221788bd632027dc2feb77b0c3c0a37ede6d77e9d4d9f0520e15",
+      "adapted": false
+    },
+    "optimizer/README.md": {
+      "path": "apps/echo_optimizer/engine/README.md",
+      "sha256": "e980bf53dd071a67e023a083e112eb502e9c97223783ed1a8b43378fd1c65c04",
+      "adapted": false
+    },
+    "optimizer/requirements.txt": {
+      "path": "apps/echo_optimizer/engine/requirements.txt",
+      "sha256": "2872240ad39db3fa61ea202cac35a5579c482437efa38edec506dbdc0f870942",
+      "adapted": false
+    },
+    "optimizer/run.py": {
+      "path": "apps/echo_optimizer/engine/run.py",
+      "sha256": "fc69da582f4ad98c7d2cd549835bdad1fef8c7fc3f7698231588a828a6e6a97d",
+      "adapted": false
+    },
+    "optimizer/verification.json": {
+      "path": "apps/echo_optimizer/engine/verification.json",
+      "sha256": "8052ff427a8f90bd56aa265d00ca31aa7efc119f19d19b2587fb6438f3e197a2",
+      "adapted": false
+    },
+    "optimizer/verify.py": {
+      "path": "apps/echo_optimizer/engine/verify.py",
+      "sha256": "4cfe31e19c918d6a3b4944ef3e3871f1cf19f0e13b9c5aab1fbccb98bb976b59",
+      "adapted": false
+    },
+    "joint_optimization_view.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_optimization_view.json",
+      "sha256": "7a43a8e387012be61a454bf63813b5da451f8ac197409851ca89a511fbe0469f",
+      "adapted": false
+    },
+    "rule_guided_view.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/rule_guided_view.json",
+      "sha256": "a67287073994affba7f10e8d17b5f793772dc6c45d9c9f693a36bb2971f3e818",
+      "adapted": false
+    },
+    "historical_reference_metrics.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/historical_reference_metrics.json",
+      "sha256": "aa71d3ccb0cb1eaf9636a3fe6b12d94f0580ebee376c4c0dff8ca31d387f0b38",
+      "adapted": false
+    },
+    "historical_reference_vulgate_usage.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/historical_reference_vulgate_usage.json",
+      "sha256": "63c605693fe8aed8b505ae6bc66d980f44335c7d1a093430c7895f505ece74de",
+      "adapted": false
+    },
+    "joint_word_explorer_manifest.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer_manifest.json",
+      "sha256": "74c2bf83151ac4141bf8fbe0da21cb393ff815a8480fcbcf7dbc89d0d324718c",
+      "adapted": false
+    },
+    "joint_loss_trace.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_loss_trace.json",
+      "sha256": "885d7cd898e2c1814dfbe5c40563a42d8e501a8a968da266efdbbada86b6c296",
+      "adapted": false
+    },
+    "joint_optimization_tradeoff.png": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_optimization_tradeoff.png",
+      "sha256": "32bd435d02bb6145f42aa3b8619253624acf62de133315181c30d27050eb86d1",
+      "adapted": false
+    },
+    "joint_optimization_tradeoff.svg": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_optimization_tradeoff.svg",
+      "sha256": "3ac692e5da9b28f9b3c27684762aed885837039858edf91a7eb60f30eddfe456",
+      "adapted": false
+    },
+    "joint_optimization_tradeoff.pdf": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_optimization_tradeoff.pdf",
+      "sha256": "0e35eaa12a852f09fc5bdb056727f8564144a68ff6929eaaaae73fcbd902bf59",
+      "adapted": false
+    },
+    "joint_word_explorer/named-1b-frequency_only.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/named-1b-frequency_only.json",
+      "sha256": "6e2b734e08e2b2926f50ccf17397ed58878ed0daf1373154efb1624f96f9fb2f",
+      "adapted": false
+    },
+    "joint_word_explorer/named-1b-identity_control.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/named-1b-identity_control.json",
+      "sha256": "1dd1e49b1f9399d7695742105253b70856361aa02d34f15ae37c0b3089c747b2",
+      "adapted": false
+    },
+    "joint_word_explorer/named-1b-joint_0.05.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/named-1b-joint_0.05.json",
+      "sha256": "5cde3879a3dadf30c7bc17f2816701623ce9becbc79bfb8fc740a0c1a8bf919f",
+      "adapted": false
+    },
+    "joint_word_explorer/named-1b-joint_0.2.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/named-1b-joint_0.2.json",
+      "sha256": "c7f06bebafba34e2edce701d5e2d9d7e70cdfee7c445530fc5e5e1e993753efd",
+      "adapted": false
+    },
+    "joint_word_explorer/named-1b-joint_0.75.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/named-1b-joint_0.75.json",
+      "sha256": "87297fc020cbf1afc4db3b3c41b0aa9187644a00e1839a5f62bc5239a350f4a2",
+      "adapted": false
+    },
+    "joint_word_explorer/named-1b-joint_3.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/named-1b-joint_3.json",
+      "sha256": "0f3e31cee1e2290598c5dc066fd32cc55d855993225cd6caab3d663eb2b72724",
+      "adapted": false
+    },
+    "joint_word_explorer/named-1a-frequency_only.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/named-1a-frequency_only.json",
+      "sha256": "3410562829029ca5fecdd5effe8ec881bb74a111e431c55e7f86e75ca9d3a5e6",
+      "adapted": false
+    },
+    "joint_word_explorer/named-1a-identity_control.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/named-1a-identity_control.json",
+      "sha256": "bb2cb87d6b4378e112317ab6c02c9c8a083abdac6432746f2f66845318b55669",
+      "adapted": false
+    },
+    "joint_word_explorer/named-1a-joint_0.05.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/named-1a-joint_0.05.json",
+      "sha256": "9ab44d057c6340a2cf59eacf9d3c9c83f58477d9552e3b3544bd20d35834ebbf",
+      "adapted": false
+    },
+    "joint_word_explorer/named-1a-joint_0.2.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/named-1a-joint_0.2.json",
+      "sha256": "46c9e821f34e62cddad8a2e64dc4102eaf8084d1f94a0e6095b09d873cb4838c",
+      "adapted": false
+    },
+    "joint_word_explorer/named-1a-joint_0.75.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/named-1a-joint_0.75.json",
+      "sha256": "92fd48b3b40c0641a61bb4e669461475f3441117ade225ab3ba23dd9c30898d4",
+      "adapted": false
+    },
+    "joint_word_explorer/named-1a-joint_3.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/named-1a-joint_3.json",
+      "sha256": "0e341a7c41d9d50fa27e7068ad87786d570d56bd3336603010c9ed74b0e70631",
+      "adapted": false
+    },
+    "joint_word_explorer/ed1-1b-frequency_only.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/ed1-1b-frequency_only.json",
+      "sha256": "9531330db2ffa402b9e354fe8505d9cb28190b8743db665de845420014966553",
+      "adapted": false
+    },
+    "joint_word_explorer/ed1-1b-joint.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/ed1-1b-joint.json",
+      "sha256": "aaaa7197a5ae99c5be602c9faf463f54eabe18376ad36d60d82a7b8d2408ae49",
+      "adapted": false
+    },
+    "joint_word_explorer/ed2-1b-frequency_only.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/ed2-1b-frequency_only.json",
+      "sha256": "1dd11e33373f736806ee9044cc0195a63cc127d181e49a02cbde89343eefc9ca",
+      "adapted": false
+    },
+    "joint_word_explorer/ed2-1b-joint.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/ed2-1b-joint.json",
+      "sha256": "ca5a068a5dc8ab359425dfaa05276b79f5f1e487487ce8802ffb5e5e93a024be",
+      "adapted": false
+    },
+    "joint_word_explorer/ed3-1b-frequency_only.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/ed3-1b-frequency_only.json",
+      "sha256": "f1a5277f2969390db8f7f75702a256be6828be2c5910ba3f3567703e1ec58d4e",
+      "adapted": false
+    },
+    "joint_word_explorer/ed3-1b-joint.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/ed3-1b-joint.json",
+      "sha256": "fac1eebe9c09cb773eeb1e9afe726ccf73105e79dfa6ab759a4e3c27e61845cc",
+      "adapted": false
+    },
+    "joint_word_explorer/guided-1b-rule_initialized_0.75.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/guided-1b-rule_initialized_0.75.json",
+      "sha256": "83d94ee1f64e3c791119820c5eadc70e73f9683b5a6f73283a7b506abd032bbd",
+      "adapted": false
+    },
+    "joint_word_explorer/guided-1b-rule_initialized_0.2.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/guided-1b-rule_initialized_0.2.json",
+      "sha256": "5a256f4a4b07f9b27f2a9f25a3d6d308ff82a37385df173e8c7561530de277c0",
+      "adapted": false
+    },
+    "joint_word_explorer/guided-1b-bench_locked_0.75.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/guided-1b-bench_locked_0.75.json",
+      "sha256": "3ead7bb23abd69aa6355c0a3744db7c9c483350db79d5b09a8d76fdbace2a288",
+      "adapted": false
+    },
+    "joint_word_explorer/guided-1b-bench_locked_0.2.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/guided-1b-bench_locked_0.2.json",
+      "sha256": "c5058f8c279e4384b505174d1ff70c3a6fbf4a153bb0c8d39210430af6509419",
+      "adapted": false
+    },
+    "joint_word_explorer/guided-1b-family_bias_0.03.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/guided-1b-family_bias_0.03.json",
+      "sha256": "0daaa951e5d9dcf213d7d3d6a67d48e993e9081c1462c5012adb11f1150a4efa",
+      "adapted": false
+    },
+    "joint_word_explorer/guided-1b-family_bias_0.1.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_word_explorer/guided-1b-family_bias_0.1.json",
+      "sha256": "1f38785e70ecad15ca3f58e80f4be3b88982d0bd1cec43972f69d39ea41c0077",
+      "adapted": false
+    },
+    "JOINT_OPTIMIZATION_RESULTS.md": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/JOINT_OPTIMIZATION_RESULTS.md",
+      "sha256": "f76b9c45a156f9a5951aea9634372632ead5af879d9f45b3b1ca20443dfc9ce0",
+      "adapted": true
+    },
+    "RULE_GUIDED_RESULTS.md": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/RULE_GUIDED_RESULTS.md",
+      "sha256": "675955699c74ae1f0289ea7a2257ebd6806e194b023042dc25622db63889189c",
+      "adapted": true
+    },
+    "data/reference_1a.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_optimization_1a.json",
+      "sha256": "ef259870c01e5e658a02e938f280a1441723b6bbc5a45133340a121709833a97",
+      "adapted": true
+    },
+    "data/reference_1b.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_optimization_1b.json",
+      "sha256": "ee2f052f934bef7a8d2b483fb4b23277cfd655ad2e9b51d59503ae3ab560ffe3",
+      "adapted": true
+    },
+    "data/chain_channels.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/chain_channels.json",
+      "sha256": "a4cd9d8613227efec91fe4bdbe917c6362e50b907a199211ee1cfd7a2415b41f",
+      "adapted": false
+    },
+    "data/joint_generic_candidates.json": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/joint_generic_candidates.json",
+      "sha256": "ad4d032caa6fe0cae5d69ccbe572feb83ccae6bf503b49460c0e8b185ccb317f",
+      "adapted": false
+    },
+    "README.md": {
+      "path": "apps/echo_optimizer/templates/README.md",
+      "sha256": "34f264ee7481156c8bd070f44dbc3bedf77dce0b10916fa09d8f88a9083c7728",
+      "adapted": false
+    },
+    "check.py": {
+      "path": "apps/echo_optimizer/templates/check.py",
+      "sha256": "aade072148b78fa0d372edf1aebfc6753a60619420c103785a4fd965cefc8371",
+      "adapted": false
+    },
+    ".gitignore": {
+      "path": "apps/echo_optimizer/templates/.gitignore",
+      "sha256": "e36d359ee70eada87e6615e0d3c9bdf76cdd40781073c30df8da2e7d0e64baaf",
+      "adapted": false
+    },
+    ".gitattributes": {
+      "path": "apps/echo_optimizer/templates/.gitattributes",
+      "sha256": "c1a455097b600d6ea8ea378a1d1a75e86c5582d75083c8b1ef0d2326f3e805af",
+      "adapted": false
+    },
+    ".nojekyll": {
+      "path": "apps/echo_optimizer/templates/.nojekyll",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "adapted": false
+    },
+    "about.html": {
+      "path": "apps/echo_optimizer/templates/README.md",
+      "sha256": "34f264ee7481156c8bd070f44dbc3bedf77dce0b10916fa09d8f88a9083c7728",
+      "adapted": true
+    },
+    "methods.html": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/JOINT_OPTIMIZATION_RESULTS.md",
+      "sha256": "f76b9c45a156f9a5951aea9634372632ead5af879d9f45b3b1ca20443dfc9ce0",
+      "adapted": true
+    },
+    "rule-guided.html": {
+      "path": "solve/botanical_enrichment/echo7/information_retention_20261014/RULE_GUIDED_RESULTS.md",
+      "sha256": "675955699c74ae1f0289ea7a2257ebd6806e194b023042dc25622db63889189c",
+      "adapted": true
+    },
+    "optimizer/README.html": {
+      "path": "apps/echo_optimizer/engine/README.md",
+      "sha256": "e980bf53dd071a67e023a083e112eb502e9c97223783ed1a8b43378fd1c65c04",
+      "adapted": true
+    }
+  }
+}

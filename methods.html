@@ -1,0 +1,1669 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Echo7: jointly optimizing frequency mass and information · Voynich optimizer</title><style>body{margin:0;background:#fcfdfd;color:#19364a;font:16px/1.65 system-ui,sans-serif}main{max-width:1100px;margin:auto;padding:32px 24px 70px}a{color:#24638b}h1,h2,h3{line-height:1.25;margin-top:1.4em}nav{display:flex;gap:20px;flex-wrap:wrap}table{border-collapse:collapse;display:block;overflow:auto;font-size:14px;margin:24px 0}th,td{border-bottom:1px solid #dce5e9;padding:9px 12px;text-align:left}pre{overflow:auto;background:#f0f4f6;padding:18px;border-radius:6px}code{font-size:.9em}img{max-width:100%;height:auto}p,li{overflow-wrap:anywhere}blockquote{margin-left:0;padding-left:20px;border-left:4px solid #a9bdc8}</style><main><nav><a href="index.html">← Voynich optimizer</a><a href="JOINT_OPTIMIZATION_RESULTS.md">Download Markdown</a><a href="https://github.com/eo777/voynich-optimizer">Source repository</a></nav><h1>Echo7: jointly optimizing frequency mass and information</h1>
+<p>15 October 2026.</p>
+<p><strong>Completed optimization sweep and independent replay audit.</strong></p>
+<p>The new model optimizes both criteria across the complete chain. It replaces greedy destination selection and uniform splitting with fitted, source-blind transition probabilities. Every initial spelling has a distinct value; observed starting token frequencies determine the prior.</p>
+<h2>Objective and constraints</h2>
+<p><code>objective = mean section frequency mismatch + λ × final fractional information loss</code>.</p>
+<p>Frequency mismatch is total variation distance between the propagated whole-section word rates and observed section rates. Zero is an exact fit. Every later section enters equally. Information loss is H(original spelling | current spelling) / H(original spelling). Neither quantity is decoded semantic information.</p>
+<p>One routing vector applies to each current spelling at each transition. Once values merge, subsequent routing cannot distinguish their ancestry. Both retention and changes may be selected; no mandatory identity allocation and no automatic independent residual mixing is used. Unattested persistence remains explicit and incurs frequency mismatch.</p>
+<p>Named edges use the scheduled candidate graph, including tentative rules, with observed nonidentity destinations. They are support permissions, not historical probability estimates. Different words can select different operations; shared family-wide application is not imposed. The generic controls add atomic one-, two-, or three-edit candidates with observed adjacent-section rates within a factor of two and targets unclaimed by the saved named-only allocation. Generic eligibility uses the original observed rates, not the fitted rates. These are missing-rule hypotheses, not evidence for those edits.</p>
+<p>A full-chain flow linear program finds the global minimum average frequency mismatch on each support. The information-aware objective is nonconvex. The named sweep uses continuation from the frequency-optimal solution through increasing information weights, plus a separate near-identity start at every weight. Each generic control starts from its frequency-optimal solution and from near-identity. The lower actual joint objective is retained, including the exact feasible frequency seed; candidate channels are never averaged. Named searches use at most 220 iterations per start; generic searches use at most 160. If smoothing produces a candidate slightly worse under actual total variation, the better exact seed is kept and this is reported. Reported iteration-limit statuses are retained. These are achieved candidates, not certified maximum-information mappings or a complete Pareto frontier.</p>
+<p>Routing probabilities use a separate softmax for each current spelling and stage, with logits bounded to [−25,25]. L-BFGS-B uses an analytic gradient back-propagated through the entire chain. During search only, absolute frequency differences are smoothed as sqrt(delta² + 10⁻¹⁴) − 10⁻⁷. Every reported mismatch and candidate-selection objective uses the actual unsmoothed total variation. Initial priors never change. Structural graph isolation is reduced out of the computation, but all isolated starting labels, their information, and their frequency mismatches remain in the totals.</p>
+<h2>Primary 1b results</h2>
+<table>
+<thead>
+<tr>
+<th>Allowed routes</th>
+<th>Objective setting</th>
+<th style="text-align:right">Mean frequency mismatch</th>
+<th style="text-align:right">Final mismatch</th>
+<th style="text-align:right">All-word information retained</th>
+<th style="text-align:right">Common-word information retained</th>
+<th style="text-align:right">Initial-hapax information retained</th>
+<th style="text-align:right">Final weight on attested words</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Named rules</td>
+<td>Best frequency fit (λ=0)</td>
+<td style="text-align:right">50.71%</td>
+<td style="text-align:right">51.37%</td>
+<td style="text-align:right">86.94%</td>
+<td style="text-align:right">77.01%</td>
+<td style="text-align:right">98.87%</td>
+<td style="text-align:right">66.27%</td>
+</tr>
+<tr>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td style="text-align:right">73.07%</td>
+<td style="text-align:right">77.59%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">57.32%</td>
+</tr>
+<tr>
+<td>Named rules</td>
+<td>Frequency emphasis (λ=0.05)</td>
+<td style="text-align:right">50.71%</td>
+<td style="text-align:right">51.37%</td>
+<td style="text-align:right">86.96%</td>
+<td style="text-align:right">77.05%</td>
+<td style="text-align:right">98.87%</td>
+<td style="text-align:right">66.30%</td>
+</tr>
+<tr>
+<td>Named rules</td>
+<td>Moderate information penalty (λ=0.2)</td>
+<td style="text-align:right">50.76%</td>
+<td style="text-align:right">51.43%</td>
+<td style="text-align:right">87.47%</td>
+<td style="text-align:right">78.19%</td>
+<td style="text-align:right">98.89%</td>
+<td style="text-align:right">66.26%</td>
+</tr>
+<tr>
+<td>Named rules</td>
+<td>Stronger information penalty (λ=0.75)</td>
+<td style="text-align:right">53.02%</td>
+<td style="text-align:right">53.36%</td>
+<td style="text-align:right">94.00%</td>
+<td style="text-align:right">91.99%</td>
+<td style="text-align:right">99.24%</td>
+<td style="text-align:right">65.83%</td>
+</tr>
+<tr>
+<td>Named rules</td>
+<td>Strongest information penalty (λ=3)</td>
+<td style="text-align:right">56.60%</td>
+<td style="text-align:right">57.19%</td>
+<td style="text-align:right">96.96%</td>
+<td style="text-align:right">98.30%</td>
+<td style="text-align:right">99.44%</td>
+<td style="text-align:right">65.09%</td>
+</tr>
+<tr>
+<td>Named + ≤1 edits</td>
+<td>Best frequency fit (λ=0)</td>
+<td style="text-align:right">25.19%</td>
+<td style="text-align:right">17.30%</td>
+<td style="text-align:right">64.75%</td>
+<td style="text-align:right">60.75%</td>
+<td style="text-align:right">80.97%</td>
+<td style="text-align:right">87.14%</td>
+</tr>
+<tr>
+<td>Named + ≤1 edits</td>
+<td>Joint optimization (λ=0.2)</td>
+<td style="text-align:right">25.30%</td>
+<td style="text-align:right">17.53%</td>
+<td style="text-align:right">65.62%</td>
+<td style="text-align:right">62.25%</td>
+<td style="text-align:right">81.29%</td>
+<td style="text-align:right">87.23%</td>
+</tr>
+<tr>
+<td>Named + ≤2 edits</td>
+<td>Best frequency fit (λ=0)</td>
+<td style="text-align:right">9.33%</td>
+<td style="text-align:right">3.15%</td>
+<td style="text-align:right">48.92%</td>
+<td style="text-align:right">44.79%</td>
+<td style="text-align:right">59.08%</td>
+<td style="text-align:right">97.33%</td>
+</tr>
+<tr>
+<td>Named + ≤2 edits</td>
+<td>Joint optimization (λ=0.2)</td>
+<td style="text-align:right">9.34%</td>
+<td style="text-align:right">3.17%</td>
+<td style="text-align:right">49.03%</td>
+<td style="text-align:right">44.98%</td>
+<td style="text-align:right">59.15%</td>
+<td style="text-align:right">97.34%</td>
+</tr>
+<tr>
+<td>Named + ≤3 edits</td>
+<td>Best frequency fit (λ=0)</td>
+<td style="text-align:right">6.55%</td>
+<td style="text-align:right">1.52%</td>
+<td style="text-align:right">43.67%</td>
+<td style="text-align:right">36.85%</td>
+<td style="text-align:right">53.16%</td>
+<td style="text-align:right">98.48%</td>
+</tr>
+<tr>
+<td>Named + ≤3 edits</td>
+<td>Frequency seed retained after joint search (λ=0.2)</td>
+<td style="text-align:right">6.55%</td>
+<td style="text-align:right">1.52%</td>
+<td style="text-align:right">43.67%</td>
+<td style="text-align:right">36.85%</td>
+<td style="text-align:right">53.16%</td>
+<td style="text-align:right">98.48%</td>
+</tr>
+</tbody>
+</table>
+<p>The previous 1b heuristic had 74.81% mean frequency mismatch and retained 83.53% of the same all-word ID information. These comparisons use the same initial corpus and token prior.</p>
+<p>Common-word and initial-hapax retention condition on their respective starting cohorts; they are not the all-word score. The complete data also reports uncertainty of common labels when all other source values are potential competitors. High information on unattested spellings is not verified historical survival; read attestation and frequency mismatch alongside every information score.</p>
+<p><img src="joint_optimization_tradeoff.png" alt="Joint frequency/information trade-off" /></p>
+<h2>Every section and starting-point sensitivity</h2>
+<table>
+<thead>
+<tr>
+<th>Start</th>
+<th>Routes</th>
+<th>Setting</th>
+<th>Section</th>
+<th style="text-align:right">Frequency mismatch</th>
+<th style="text-align:right">All-word information retained</th>
+<th style="text-align:right">Common-word information retained</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td>1a</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td>1b</td>
+<td style="text-align:right">45.23%</td>
+<td style="text-align:right">96.28%</td>
+<td style="text-align:right">93.80%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td>1.5a</td>
+<td style="text-align:right">50.45%</td>
+<td style="text-align:right">95.06%</td>
+<td style="text-align:right">92.09%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td>2a</td>
+<td style="text-align:right">48.78%</td>
+<td style="text-align:right">92.69%</td>
+<td style="text-align:right">87.65%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td>3a</td>
+<td style="text-align:right">52.92%</td>
+<td style="text-align:right">90.68%</td>
+<td style="text-align:right">84.20%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td>3b</td>
+<td style="text-align:right">54.57%</td>
+<td style="text-align:right">89.60%</td>
+<td style="text-align:right">82.30%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td>3c</td>
+<td style="text-align:right">54.72%</td>
+<td style="text-align:right">88.40%</td>
+<td style="text-align:right">80.16%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td>4c</td>
+<td style="text-align:right">53.16%</td>
+<td style="text-align:right">86.34%</td>
+<td style="text-align:right">76.66%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td>4a</td>
+<td style="text-align:right">52.86%</td>
+<td style="text-align:right">85.04%</td>
+<td style="text-align:right">73.66%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td>1a</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td>1b</td>
+<td style="text-align:right">51.10%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td>1.5a</td>
+<td style="text-align:right">59.18%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td>2a</td>
+<td style="text-align:right">64.65%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td>3a</td>
+<td style="text-align:right">74.19%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td>3b</td>
+<td style="text-align:right">75.88%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td>3c</td>
+<td style="text-align:right">73.08%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td>4c</td>
+<td style="text-align:right">77.87%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td>4a</td>
+<td style="text-align:right">76.88%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td>1a</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td>1b</td>
+<td style="text-align:right">45.24%</td>
+<td style="text-align:right">96.34%</td>
+<td style="text-align:right">93.84%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td>1.5a</td>
+<td style="text-align:right">50.39%</td>
+<td style="text-align:right">95.11%</td>
+<td style="text-align:right">92.10%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td>2a</td>
+<td style="text-align:right">48.81%</td>
+<td style="text-align:right">92.73%</td>
+<td style="text-align:right">87.64%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td>3a</td>
+<td style="text-align:right">52.87%</td>
+<td style="text-align:right">90.73%</td>
+<td style="text-align:right">84.26%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td>3b</td>
+<td style="text-align:right">54.56%</td>
+<td style="text-align:right">89.64%</td>
+<td style="text-align:right">82.33%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td>3c</td>
+<td style="text-align:right">54.73%</td>
+<td style="text-align:right">88.48%</td>
+<td style="text-align:right">80.29%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td>4c</td>
+<td style="text-align:right">53.17%</td>
+<td style="text-align:right">86.39%</td>
+<td style="text-align:right">76.74%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td>4a</td>
+<td style="text-align:right">52.93%</td>
+<td style="text-align:right">85.12%</td>
+<td style="text-align:right">73.84%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td>1a</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td>1b</td>
+<td style="text-align:right">45.38%</td>
+<td style="text-align:right">96.77%</td>
+<td style="text-align:right">94.32%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td>1.5a</td>
+<td style="text-align:right">50.46%</td>
+<td style="text-align:right">95.62%</td>
+<td style="text-align:right">92.69%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td>2a</td>
+<td style="text-align:right">48.92%</td>
+<td style="text-align:right">93.36%</td>
+<td style="text-align:right">88.46%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td>3a</td>
+<td style="text-align:right">52.98%</td>
+<td style="text-align:right">91.52%</td>
+<td style="text-align:right">85.41%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td>3b</td>
+<td style="text-align:right">54.63%</td>
+<td style="text-align:right">90.45%</td>
+<td style="text-align:right">83.53%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td>3c</td>
+<td style="text-align:right">54.79%</td>
+<td style="text-align:right">89.40%</td>
+<td style="text-align:right">81.85%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td>4c</td>
+<td style="text-align:right">53.22%</td>
+<td style="text-align:right">87.43%</td>
+<td style="text-align:right">78.44%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td>4a</td>
+<td style="text-align:right">53.09%</td>
+<td style="text-align:right">86.39%</td>
+<td style="text-align:right">76.16%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td>1a</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td>1b</td>
+<td style="text-align:right">47.90%</td>
+<td style="text-align:right">98.32%</td>
+<td style="text-align:right">98.91%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td>1.5a</td>
+<td style="text-align:right">54.14%</td>
+<td style="text-align:right">97.71%</td>
+<td style="text-align:right">98.18%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td>2a</td>
+<td style="text-align:right">51.23%</td>
+<td style="text-align:right">96.45%</td>
+<td style="text-align:right">96.15%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td>3a</td>
+<td style="text-align:right">53.93%</td>
+<td style="text-align:right">95.81%</td>
+<td style="text-align:right">95.37%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td>3b</td>
+<td style="text-align:right">57.04%</td>
+<td style="text-align:right">95.24%</td>
+<td style="text-align:right">94.50%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td>3c</td>
+<td style="text-align:right">56.67%</td>
+<td style="text-align:right">94.86%</td>
+<td style="text-align:right">94.23%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td>4c</td>
+<td style="text-align:right">56.42%</td>
+<td style="text-align:right">94.14%</td>
+<td style="text-align:right">93.35%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td>4a</td>
+<td style="text-align:right">57.11%</td>
+<td style="text-align:right">93.94%</td>
+<td style="text-align:right">93.06%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td>1a</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td>1b</td>
+<td style="text-align:right">50.72%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td>1.5a</td>
+<td style="text-align:right">58.51%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td>2a</td>
+<td style="text-align:right">63.59%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td>3a</td>
+<td style="text-align:right">71.74%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td>3b</td>
+<td style="text-align:right">72.40%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td>3c</td>
+<td style="text-align:right">70.02%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td>4c</td>
+<td style="text-align:right">73.81%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td>4a</td>
+<td style="text-align:right">73.10%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td>1b</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td>1.5a</td>
+<td style="text-align:right">53.88%</td>
+<td style="text-align:right">97.93%</td>
+<td style="text-align:right">95.69%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td>2a</td>
+<td style="text-align:right">50.22%</td>
+<td style="text-align:right">95.99%</td>
+<td style="text-align:right">93.20%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td>3a</td>
+<td style="text-align:right">49.05%</td>
+<td style="text-align:right">93.57%</td>
+<td style="text-align:right">88.75%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td>3b</td>
+<td style="text-align:right">49.23%</td>
+<td style="text-align:right">91.66%</td>
+<td style="text-align:right">86.01%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td>3c</td>
+<td style="text-align:right">51.10%</td>
+<td style="text-align:right">90.54%</td>
+<td style="text-align:right">83.74%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td>4c</td>
+<td style="text-align:right">50.12%</td>
+<td style="text-align:right">88.22%</td>
+<td style="text-align:right">79.61%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td>4a</td>
+<td style="text-align:right">51.37%</td>
+<td style="text-align:right">86.94%</td>
+<td style="text-align:right">77.01%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td>1b</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td>1.5a</td>
+<td style="text-align:right">60.57%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td>2a</td>
+<td style="text-align:right">67.66%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td>3a</td>
+<td style="text-align:right">71.69%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td>3b</td>
+<td style="text-align:right">75.80%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td>3c</td>
+<td style="text-align:right">76.31%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td>4c</td>
+<td style="text-align:right">81.88%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td>4a</td>
+<td style="text-align:right">77.59%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td>1b</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td>1.5a</td>
+<td style="text-align:right">53.88%</td>
+<td style="text-align:right">97.94%</td>
+<td style="text-align:right">95.73%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td>2a</td>
+<td style="text-align:right">50.21%</td>
+<td style="text-align:right">96.00%</td>
+<td style="text-align:right">93.24%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td>3a</td>
+<td style="text-align:right">49.04%</td>
+<td style="text-align:right">93.56%</td>
+<td style="text-align:right">88.76%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td>3b</td>
+<td style="text-align:right">49.23%</td>
+<td style="text-align:right">91.66%</td>
+<td style="text-align:right">86.01%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td>3c</td>
+<td style="text-align:right">51.12%</td>
+<td style="text-align:right">90.54%</td>
+<td style="text-align:right">83.75%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td>4c</td>
+<td style="text-align:right">50.12%</td>
+<td style="text-align:right">88.22%</td>
+<td style="text-align:right">79.64%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td>4a</td>
+<td style="text-align:right">51.37%</td>
+<td style="text-align:right">86.96%</td>
+<td style="text-align:right">77.05%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td>1b</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td>1.5a</td>
+<td style="text-align:right">53.87%</td>
+<td style="text-align:right">97.99%</td>
+<td style="text-align:right">95.79%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td>2a</td>
+<td style="text-align:right">50.22%</td>
+<td style="text-align:right">96.10%</td>
+<td style="text-align:right">93.37%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td>3a</td>
+<td style="text-align:right">49.03%</td>
+<td style="text-align:right">93.69%</td>
+<td style="text-align:right">88.92%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td>3b</td>
+<td style="text-align:right">49.33%</td>
+<td style="text-align:right">91.85%</td>
+<td style="text-align:right">86.27%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td>3c</td>
+<td style="text-align:right">51.31%</td>
+<td style="text-align:right">90.82%</td>
+<td style="text-align:right">84.15%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td>4c</td>
+<td style="text-align:right">50.10%</td>
+<td style="text-align:right">88.58%</td>
+<td style="text-align:right">80.33%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td>4a</td>
+<td style="text-align:right">51.43%</td>
+<td style="text-align:right">87.47%</td>
+<td style="text-align:right">78.19%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td>1b</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td>1.5a</td>
+<td style="text-align:right">55.00%</td>
+<td style="text-align:right">98.87%</td>
+<td style="text-align:right">98.45%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td>2a</td>
+<td style="text-align:right">52.22%</td>
+<td style="text-align:right">97.77%</td>
+<td style="text-align:right">97.46%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td>3a</td>
+<td style="text-align:right">51.68%</td>
+<td style="text-align:right">96.61%</td>
+<td style="text-align:right">95.41%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td>3b</td>
+<td style="text-align:right">51.85%</td>
+<td style="text-align:right">95.74%</td>
+<td style="text-align:right">94.61%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td>3c</td>
+<td style="text-align:right">53.62%</td>
+<td style="text-align:right">95.29%</td>
+<td style="text-align:right">93.63%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td>4c</td>
+<td style="text-align:right">53.41%</td>
+<td style="text-align:right">94.33%</td>
+<td style="text-align:right">92.61%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td>4a</td>
+<td style="text-align:right">53.36%</td>
+<td style="text-align:right">94.00%</td>
+<td style="text-align:right">91.99%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td>1b</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td>1.5a</td>
+<td style="text-align:right">56.85%</td>
+<td style="text-align:right">99.23%</td>
+<td style="text-align:right">99.70%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td>2a</td>
+<td style="text-align:right">54.75%</td>
+<td style="text-align:right">98.57%</td>
+<td style="text-align:right">99.69%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td>3a</td>
+<td style="text-align:right">55.60%</td>
+<td style="text-align:right">97.94%</td>
+<td style="text-align:right">98.72%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td>3b</td>
+<td style="text-align:right">56.16%</td>
+<td style="text-align:right">97.64%</td>
+<td style="text-align:right">98.58%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td>3c</td>
+<td style="text-align:right">58.02%</td>
+<td style="text-align:right">97.61%</td>
+<td style="text-align:right">98.57%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td>4c</td>
+<td style="text-align:right">57.62%</td>
+<td style="text-align:right">97.09%</td>
+<td style="text-align:right">98.31%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td>4a</td>
+<td style="text-align:right">57.19%</td>
+<td style="text-align:right">96.96%</td>
+<td style="text-align:right">98.30%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Best frequency fit</td>
+<td>1b</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Best frequency fit</td>
+<td>1.5a</td>
+<td style="text-align:right">31.68%</td>
+<td style="text-align:right">94.33%</td>
+<td style="text-align:right">93.85%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Best frequency fit</td>
+<td>2a</td>
+<td style="text-align:right">25.03%</td>
+<td style="text-align:right">89.78%</td>
+<td style="text-align:right">88.69%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Best frequency fit</td>
+<td>3a</td>
+<td style="text-align:right">22.74%</td>
+<td style="text-align:right">84.17%</td>
+<td style="text-align:right">83.48%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Best frequency fit</td>
+<td>3b</td>
+<td style="text-align:right">26.06%</td>
+<td style="text-align:right">79.46%</td>
+<td style="text-align:right">78.09%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Best frequency fit</td>
+<td>3c</td>
+<td style="text-align:right">32.61%</td>
+<td style="text-align:right">74.92%</td>
+<td style="text-align:right">72.88%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Best frequency fit</td>
+<td>4c</td>
+<td style="text-align:right">20.87%</td>
+<td style="text-align:right">69.05%</td>
+<td style="text-align:right">65.14%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Best frequency fit</td>
+<td>4a</td>
+<td style="text-align:right">17.30%</td>
+<td style="text-align:right">64.75%</td>
+<td style="text-align:right">60.75%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Joint optimization</td>
+<td>1b</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Joint optimization</td>
+<td>1.5a</td>
+<td style="text-align:right">31.74%</td>
+<td style="text-align:right">94.42%</td>
+<td style="text-align:right">93.99%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Joint optimization</td>
+<td>2a</td>
+<td style="text-align:right">25.20%</td>
+<td style="text-align:right">89.96%</td>
+<td style="text-align:right">88.98%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Joint optimization</td>
+<td>3a</td>
+<td style="text-align:right">22.84%</td>
+<td style="text-align:right">84.42%</td>
+<td style="text-align:right">83.83%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Joint optimization</td>
+<td>3b</td>
+<td style="text-align:right">26.15%</td>
+<td style="text-align:right">79.82%</td>
+<td style="text-align:right">78.50%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Joint optimization</td>
+<td>3c</td>
+<td style="text-align:right">32.74%</td>
+<td style="text-align:right">75.43%</td>
+<td style="text-align:right">73.58%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Joint optimization</td>
+<td>4c</td>
+<td style="text-align:right">20.90%</td>
+<td style="text-align:right">69.67%</td>
+<td style="text-align:right">66.05%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Joint optimization</td>
+<td>4a</td>
+<td style="text-align:right">17.53%</td>
+<td style="text-align:right">65.62%</td>
+<td style="text-align:right">62.25%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Best frequency fit</td>
+<td>1b</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Best frequency fit</td>
+<td>1.5a</td>
+<td style="text-align:right">7.96%</td>
+<td style="text-align:right">93.26%</td>
+<td style="text-align:right">93.11%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Best frequency fit</td>
+<td>2a</td>
+<td style="text-align:right">6.30%</td>
+<td style="text-align:right">86.33%</td>
+<td style="text-align:right">84.98%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Best frequency fit</td>
+<td>3a</td>
+<td style="text-align:right">8.35%</td>
+<td style="text-align:right">77.87%</td>
+<td style="text-align:right">76.20%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Best frequency fit</td>
+<td>3b</td>
+<td style="text-align:right">10.36%</td>
+<td style="text-align:right">70.76%</td>
+<td style="text-align:right">69.32%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Best frequency fit</td>
+<td>3c</td>
+<td style="text-align:right">24.45%</td>
+<td style="text-align:right">64.12%</td>
+<td style="text-align:right">62.14%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Best frequency fit</td>
+<td>4c</td>
+<td style="text-align:right">4.71%</td>
+<td style="text-align:right">56.65%</td>
+<td style="text-align:right">53.50%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Best frequency fit</td>
+<td>4a</td>
+<td style="text-align:right">3.15%</td>
+<td style="text-align:right">48.92%</td>
+<td style="text-align:right">44.79%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Joint optimization</td>
+<td>1b</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Joint optimization</td>
+<td>1.5a</td>
+<td style="text-align:right">7.98%</td>
+<td style="text-align:right">93.27%</td>
+<td style="text-align:right">93.11%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Joint optimization</td>
+<td>2a</td>
+<td style="text-align:right">6.32%</td>
+<td style="text-align:right">86.36%</td>
+<td style="text-align:right">85.01%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Joint optimization</td>
+<td>3a</td>
+<td style="text-align:right">8.36%</td>
+<td style="text-align:right">77.90%</td>
+<td style="text-align:right">76.25%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Joint optimization</td>
+<td>3b</td>
+<td style="text-align:right">10.38%</td>
+<td style="text-align:right">70.82%</td>
+<td style="text-align:right">69.41%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Joint optimization</td>
+<td>3c</td>
+<td style="text-align:right">24.46%</td>
+<td style="text-align:right">64.18%</td>
+<td style="text-align:right">62.21%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Joint optimization</td>
+<td>4c</td>
+<td style="text-align:right">4.73%</td>
+<td style="text-align:right">56.74%</td>
+<td style="text-align:right">53.65%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Joint optimization</td>
+<td>4a</td>
+<td style="text-align:right">3.17%</td>
+<td style="text-align:right">49.03%</td>
+<td style="text-align:right">44.98%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Best frequency fit</td>
+<td>1b</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Best frequency fit</td>
+<td>1.5a</td>
+<td style="text-align:right">4.19%</td>
+<td style="text-align:right">92.62%</td>
+<td style="text-align:right">91.69%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Best frequency fit</td>
+<td>2a</td>
+<td style="text-align:right">2.79%</td>
+<td style="text-align:right">85.42%</td>
+<td style="text-align:right">81.81%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Best frequency fit</td>
+<td>3a</td>
+<td style="text-align:right">5.25%</td>
+<td style="text-align:right">76.27%</td>
+<td style="text-align:right">73.57%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Best frequency fit</td>
+<td>3b</td>
+<td style="text-align:right">7.82%</td>
+<td style="text-align:right">68.63%</td>
+<td style="text-align:right">65.12%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Best frequency fit</td>
+<td>3c</td>
+<td style="text-align:right">22.26%</td>
+<td style="text-align:right">59.72%</td>
+<td style="text-align:right">56.19%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Best frequency fit</td>
+<td>4c</td>
+<td style="text-align:right">2.00%</td>
+<td style="text-align:right">51.65%</td>
+<td style="text-align:right">46.26%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Best frequency fit</td>
+<td>4a</td>
+<td style="text-align:right">1.52%</td>
+<td style="text-align:right">43.67%</td>
+<td style="text-align:right">36.85%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Frequency seed retained after joint search</td>
+<td>1b</td>
+<td style="text-align:right">0.00%</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">100.00%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Frequency seed retained after joint search</td>
+<td>1.5a</td>
+<td style="text-align:right">4.19%</td>
+<td style="text-align:right">92.62%</td>
+<td style="text-align:right">91.69%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Frequency seed retained after joint search</td>
+<td>2a</td>
+<td style="text-align:right">2.79%</td>
+<td style="text-align:right">85.42%</td>
+<td style="text-align:right">81.81%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Frequency seed retained after joint search</td>
+<td>3a</td>
+<td style="text-align:right">5.25%</td>
+<td style="text-align:right">76.27%</td>
+<td style="text-align:right">73.57%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Frequency seed retained after joint search</td>
+<td>3b</td>
+<td style="text-align:right">7.82%</td>
+<td style="text-align:right">68.63%</td>
+<td style="text-align:right">65.12%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Frequency seed retained after joint search</td>
+<td>3c</td>
+<td style="text-align:right">22.26%</td>
+<td style="text-align:right">59.72%</td>
+<td style="text-align:right">56.19%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Frequency seed retained after joint search</td>
+<td>4c</td>
+<td style="text-align:right">2.00%</td>
+<td style="text-align:right">51.65%</td>
+<td style="text-align:right">46.26%</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Frequency seed retained after joint search</td>
+<td>4a</td>
+<td style="text-align:right">1.52%</td>
+<td style="text-align:right">43.67%</td>
+<td style="text-align:right">36.85%</td>
+</tr>
+</tbody>
+</table>
+<h2>Inspect individual words</h2>
+<p>The app now includes a searchable word explorer at <code>index.html#word-explorer</code>, covering all 6,903 spellings and all 18 saved fitted models and controls. The first table compares observed counts and normalized section rates with complete projected spelling rates and starting-value mixtures. The second follows an initial word value through every section, showing its six largest destination branches and the remaining weight. A spelling absent at the start has no separately assigned source value, but its later usage and incoming values remain inspectable. Selecting a word replays saved probabilities without refitting. Negligible projected usage is labeled explicitly rather than presenting tiny numerical residuals as substantial mixtures.</p>
+<p>Browser calculations were checked against an independent Python replay: 165 word/section forward-value and backward-origin comparisons, plus 150 whole-mass section checks across all 18 conditions; maximum discrepancy 1.72e-15. Verification metrics are retained in <code>joint_word_explorer_verification.json</code>. The temporary dense reference fixture is removed after verification; <code>export_joint_word_explorer.py</code> can regenerate it.</p>
+<h2>Numerical verification and optimizer status</h2>
+<p>Independent replay without optimizer imports checks every saved kernel, allowed edge, row probability, source prior, complete stage trajectory, direct-KL information, common/hapax score and the data-processing inequality. It also verifies every exported word rate, observed count, endpoint and source contribution. Maximum discrepancy: 5.15e-14. A directional finite-difference check of the whole-chain analytic gradient had maximum error 1.16e-12.</p>
+<p>The endpoint export was corrected to include identity-only labels reduced out of the optimizer. Those labels were already included in all scores and section rates; this repair changes destination listings, not frequencies, information scores or fitted kernels.</p>
+<p>Storage validation on 15 October passed: workspace 17.09 GiB, no completed-study arrays of 10 MB or more. Dense model arrays were temporary RAM data; verified sparse kernels, reports and compact endpoint data are retained.</p>
+<table>
+<thead>
+<tr>
+<th>Start</th>
+<th>Routes</th>
+<th>Setting</th>
+<th style="text-align:right">Selected iterations</th>
+<th>Solver termination</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td style="text-align:right">6260</td>
+<td>Optimization terminated successfully. (HiGHS Status 7: Optimal)</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td style="text-align:right">—</td>
+<td>Identity control</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td style="text-align:right">220</td>
+<td>STOP: TOTAL NO. of ITERATIONS REACHED LIMIT</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td style="text-align:right">220</td>
+<td>STOP: TOTAL NO. of ITERATIONS REACHED LIMIT</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td style="text-align:right">220</td>
+<td>STOP: TOTAL NO. of ITERATIONS REACHED LIMIT</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td style="text-align:right">220</td>
+<td>STOP: TOTAL NO. of ITERATIONS REACHED LIMIT</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Best frequency fit</td>
+<td style="text-align:right">4812</td>
+<td>Optimization terminated successfully. (HiGHS Status 7: Optimal)</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Keep every spelling</td>
+<td style="text-align:right">—</td>
+<td>Identity control</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Frequency emphasis</td>
+<td style="text-align:right">220</td>
+<td>STOP: TOTAL NO. of ITERATIONS REACHED LIMIT</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Moderate information penalty</td>
+<td style="text-align:right">220</td>
+<td>STOP: TOTAL NO. of ITERATIONS REACHED LIMIT</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Stronger information penalty</td>
+<td style="text-align:right">220</td>
+<td>STOP: TOTAL NO. of ITERATIONS REACHED LIMIT</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named rules</td>
+<td>Strongest information penalty</td>
+<td style="text-align:right">220</td>
+<td>STOP: TOTAL NO. of ITERATIONS REACHED LIMIT</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Best frequency fit</td>
+<td style="text-align:right">—</td>
+<td>Identity control</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤1 edits</td>
+<td>Joint optimization</td>
+<td style="text-align:right">160</td>
+<td>STOP: TOTAL NO. of ITERATIONS REACHED LIMIT</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Best frequency fit</td>
+<td style="text-align:right">—</td>
+<td>Identity control</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤2 edits</td>
+<td>Joint optimization</td>
+<td style="text-align:right">160</td>
+<td>STOP: TOTAL NO. of ITERATIONS REACHED LIMIT</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Best frequency fit</td>
+<td style="text-align:right">—</td>
+<td>Identity control</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Named + ≤3 edits</td>
+<td>Frequency seed retained after joint search</td>
+<td style="text-align:right">0</td>
+<td>Exact feasible frequency seed retained: neither bounded joint search improved its actual unsmoothed objective.</td>
+</tr>
+</tbody>
+</table>
+<h2>Where the illustrated optimized solution loses distinctions</h2>
+<p>The named λ=0.75 solution loses 0.513403 bits in total. The exact destination ledger sums to every step within 4.73e-15 bits. All destinations are saved in <code>joint_loss_trace.json</code>; the largest two per transition are shown in the app. A destination is charged only for new ambiguity, after subtracting ambiguity already present in its incoming mixtures.</p>
+<p>The frequency-only LP is an optimistic support benchmark. Residual mismatch can reflect missing transformations, actual changes in usage, segmentation, or failure of this fixed-prior model. The joint scores cannot establish that these routes were used historically or that meanings changed. No named rule, Golf ordering, or linguistic interpretation is promoted by this test.</p>
+<p>A separate entropy ceiling is deliberately distinguished from achieved results: the 1b source entropy is 8.563508 bits; the lowest later observed word entropy is 8.524459 bits in 4a. Under exact empirical marginals and the fixed source prior, data processing therefore gives an information ceiling of 99.544%. This upper bound does not construct such a system. It also means that substantially lower achieved scores cannot be attributed to the output entropy alone; route constraints and local allocation choices still matter.</p>
+<p>Source: <code>joint_optimization.py</code>, <code>joint_generic_optimization.py</code>; actual-objective selection: <code>finalize_joint_candidates.py</code>; verification: <code>verify_joint_optimization.py</code>; destination ledger: <code>joint_loss_trace.py</code>. Reproduce the named sweep for both <code>--start 1a</code> and <code>--start 1b</code> with <code>--iterations 220 --seeds 2 --weights 0.05,0.2,0.75,3</code>; run generic <code>--ed 1</code>, <code>--ed 2</code>, and <code>--ed 3</code> with <code>--start 1b --iterations 160 --seeds 2 --weight 0.2</code>. Then run the finalizer, independent verifier over all five result files, loss ledger, and report. Full kernels and endpoint source contributions are retained in the corresponding compact JSON files. No dense arrays are retained.</p>
+</main></html>

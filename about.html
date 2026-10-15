@@ -1,0 +1,77 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Voynich optimizer · Voynich optimizer</title><style>body{margin:0;background:#fcfdfd;color:#19364a;font:16px/1.65 system-ui,sans-serif}main{max-width:1100px;margin:auto;padding:32px 24px 70px}a{color:#24638b}h1,h2,h3{line-height:1.25;margin-top:1.4em}nav{display:flex;gap:20px;flex-wrap:wrap}table{border-collapse:collapse;display:block;overflow:auto;font-size:14px;margin:24px 0}th,td{border-bottom:1px solid #dce5e9;padding:9px 12px;text-align:left}pre{overflow:auto;background:#f0f4f6;padding:18px;border-radius:6px}code{font-size:.9em}img{max-width:100%;height:auto}p,li{overflow-wrap:anywhere}blockquote{margin-left:0;padding-left:20px;border-left:4px solid #a9bdc8}</style><main><nav><a href="index.html">← Voynich optimizer</a><a href="README.md">Download Markdown</a><a href="https://github.com/eo777/voynich-optimizer">Source repository</a></nav><h1>Voynich optimizer</h1>
+<p>Can proposed Voynich spelling transformations preserve information while matching word usage across manuscript sections?</p>
+<p>This standalone app explores the simple Echo optimizer: a whole-chain search balancing frequency mismatch against loss of distinct starting-word identities. It includes 24 saved models, a word-by-word explorer, rule-guided variants, and Latin abbreviation and Vulgate frequency references. The Python optimizer and its frozen inputs are included; the original research workspace is not required.</p>
+<h2>Open the app</h2>
+<p>The GitHub Pages address is <a href="https://eo777.github.io/voynich-optimizer/">eo777.github.io/voynich-optimizer</a>, once Pages has been enabled for <code>main</code> and the repository root.</p>
+<p>To run locally, serve this directory:</p>
+<pre><code class="language-sh">python -m http.server 8782 --bind 127.0.0.1
+</code></pre>
+<p>Open <a href="http://127.0.0.1:8782/">localhost:8782</a>. Use a web server rather than opening the HTML directly: the explorer loads its data with <code>fetch</code>. No backend, accounts, build step or JavaScript dependencies are required to view saved results.</p>
+<p>For a concrete path, open <a href="https://eo777.github.io/voynich-optimizer/?word=chol&amp;condition=guided-1b-family_bias_0.1#word-explorer">chol under the stronger family preference</a>. The selector covers 6,903 spellings. All sections are visible together, with observed counts, projected usage, incoming values and the selected source value's destinations.</p>
+<h2>What is measured</h2>
+<p>Each spelling in the starting section has a unique synthetic identity and probability equal to its observed token share. All values currently sharing one spelling follow the same transition probabilities. A rename can preserve an identity; a merge can destroy the distinction between identities.</p>
+<p>The base objective is:</p>
+<p><code>mean section frequency mismatch + information weight × final fractional identity-information loss</code></p>
+<p>Frequency mismatch is total variation between projected and observed spelling frequencies. Identity information is mutual information divided by starting entropy. Common-word scores condition on words occurring at least ten times in the starting section. These are different quantities with different denominators.</p>
+<p>Named-rule, generic one-/two-/three-edit, initial-class-preserving and family-biased conditions make different assumptions. Family preference changes the objective; it is not an independent discovery of that path. The permitted graph includes tentative correspondences. Starting usage is fixed during propagation, and a spelling may retain identity while absent from a later section, incurring frequency mismatch.</p>
+<p>These are conditional feasibility experiments, not decipherments or recovered historical lineages. Information-aware searches are local and do not prove a global optimum. Unchanged meanings can have changing usage; historical abbreviation collision loss and forward frequency mismatch must be assessed separately.</p>
+<ul>
+<li><a href="methods.html">Joint optimizer methods and results</a></li>
+<li><a href="rule-guided.html">Rule-guided methods and historical comparisons</a></li>
+<li><a href="historical_reference.html">Latin reference study</a></li>
+<li><a href="optimizer/README.html">Python optimizer instructions</a></li>
+</ul>
+<p>The two research reports preserve the study's original results and reproduction history. Use the standalone Python instructions for paths and commands in this repository.</p>
+<h2>Run a new optimization</h2>
+<p>Python 3.9 or newer, NumPy and SciPy are needed for fitting. Viewing the app does not require them.</p>
+<pre><code class="language-sh">python -m pip install -r optimizer/requirements.txt
+python -m optimizer.run --help
+python -m optimizer.verify
+</code></pre>
+<p>New runs are written separately from the frozen published models; see the optimizer instructions for examples and resource estimates. The browser displays the verified saved fits until an explicitly refreshed dataset is published.</p>
+<h2>Verify the package</h2>
+<pre><code class="language-sh">python check.py
+python -m optimizer.verify
+</code></pre>
+<p>The first command uses only the Python standard library. It checks the publication hashes, all model files, transition rows and corpus alignment. The second checks the numerical optimizer against compact reference metrics. <code>optimizer/verification.json</code> records the extraction-time comparison with the original calculations.</p>
+<h2>Contents</h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>index.html</code>, <code>*.js</code>, <code>*.mjs</code></td>
+<td>Static results and word explorer</td>
+</tr>
+<tr>
+<td><code>joint_word_explorer/</code></td>
+<td>24 saved stochastic models, loaded on demand</td>
+</tr>
+<tr>
+<td><code>data/</code></td>
+<td>Frozen section counts, atomic glyph units, scheduled rule graph, generic candidates and compact reference metrics</td>
+</tr>
+<tr>
+<td><code>optimizer/</code></td>
+<td>Portable Python implementation and numerical checks</td>
+</tr>
+<tr>
+<td><code>historical_reference*</code></td>
+<td>Latin abbreviation and Vulgate comparison metrics, provenance and explanation</td>
+</tr>
+<tr>
+<td><code>site-manifest.json</code></td>
+<td>File hashes and original source-artifact hashes</td>
+</tr>
+</tbody>
+</table>
+<h2>Data and related work</h2>
+<p>Voynich counts and candidate rules are the frozen Echo study snapshot of 14–15 October 2026. Text derives from the Zandbergen–Landini transliteration; the proposed Golf 2.1 section order is a study assumption. <code>data/chain_channels.json</code> retains units, section counts, rule labels, scopes, definitions and source hashes. This snapshot does not automatically adopt later rule-catalogue changes.</p>
+<p>The Latin reference page links the ORIFLAMMS manuscript datasets, the Saint-Victor release and the Clementine Vulgate source, with revisions and analysis choices in the metric files. The package includes derived measurements, not the upstream image collections. Reported abbreviation figures are finite-sample spelling-identity measurements, not universal semantic-loss estimates.</p>
+<p>Related apps: <a href="https://eo777.github.io/voynich-rules/">Echo rule analyzer</a> and <a href="https://eo777.github.io/voynich-clusters/">Voynich clusters</a>.</p>
+<p>This is the simple joint optimizer, separate from the newer Echo preservation-model workstream. The package is exported from a research workspace, but is runnable on its own. Only app assets, executable source and their required inputs are included. The Python tool reuses the browser's saved kernels; duplicate research archives, optimizer output directories, unrelated studies and temporary model arrays are excluded.</p>
+</main></html>

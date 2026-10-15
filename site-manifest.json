@@ -1,6 +1,6 @@
 {
   "generator": "echo.simple_optimizer.standalone.v1",
-  "built_at": "2026-10-15T23:10:15.798882+00:00",
+  "built_at": "2026-10-15T23:15:18.921300+00:00",
   "study": "Echo simple joint frequency/information optimizer; 14–15 October 2026",
   "repository": "https://github.com/eo777/voynich-optimizer",
   "models": 24,
@@ -23,16 +23,16 @@
       "sha256": "3b164bbdba1bae5043ed7d2f7230405366d8ea8048dcc9ad89da693b9e8a1849"
     },
     "README.md": {
-      "bytes": 6154,
-      "sha256": "34f264ee7481156c8bd070f44dbc3bedf77dce0b10916fa09d8f88a9083c7728"
+      "bytes": 6108,
+      "sha256": "456d7f234349cca2f1e91a819f0b68cb370541788ad84d336b405615ed2c82ed"
     },
     "RULE_GUIDED_RESULTS.md": {
       "bytes": 12758,
       "sha256": "ab2e03343cc5d7d78873017ef96e9ebc585b8ec4bb6cf38dc0ccb033697c58e1"
     },
     "about.html": {
-      "bytes": 7877,
-      "sha256": "c6604d19ff4aef6e0d941defb23650e87cb685dec8acfcc89cf3ce4f86df777e"
+      "bytes": 7831,
+      "sha256": "f7732237ef060636894943349a2ac254d266e89cb7c3916bf2770e4ba20ff7d2"
     },
     "check.py": {
       "bytes": 2947,
@@ -532,7 +532,7 @@
     },
     "README.md": {
       "path": "apps/echo_optimizer/templates/README.md",
-      "sha256": "34f264ee7481156c8bd070f44dbc3bedf77dce0b10916fa09d8f88a9083c7728",
+      "sha256": "456d7f234349cca2f1e91a819f0b68cb370541788ad84d336b405615ed2c82ed",
       "adapted": false
     },
     "check.py": {
@@ -557,7 +557,7 @@
     },
     "about.html": {
       "path": "apps/echo_optimizer/templates/README.md",
-      "sha256": "34f264ee7481156c8bd070f44dbc3bedf77dce0b10916fa09d8f88a9083c7728",
+      "sha256": "456d7f234349cca2f1e91a819f0b68cb370541788ad84d336b405615ed2c82ed",
       "adapted": true
     },
     "methods.html": {

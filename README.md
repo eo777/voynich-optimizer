@@ -6,7 +6,7 @@ This standalone app explores the simple Echo optimizer: a whole-chain search bal
 
 ## Open the app
 
-The GitHub Pages address is [eo777.github.io/voynich-optimizer](https://eo777.github.io/voynich-optimizer/), once Pages has been enabled for `main` and the repository root.
+Open the [live app](https://eo777.github.io/voynich-optimizer/). GitHub Pages publishes the `main` branch and repository root.
 
 To run locally, serve this directory:
 
